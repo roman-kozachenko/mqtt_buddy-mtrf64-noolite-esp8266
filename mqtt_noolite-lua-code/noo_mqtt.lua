@@ -58,7 +58,9 @@ m:on("message", function(client, topic, data)
             end
         elseif action == 'devices' and data == 'GET' then
             devices = db.get_devices(channel)
-            if devices then logToMqtt(devices) end
+            if devices then logToMqtt(devices) else logToMqtt('no devices bound') end
+        elseif action == 'ping' then
+            logToMqtt('pong')
         end
     end
 end)
@@ -119,7 +121,7 @@ wifiModule.setup(SSID, PASSWORD, function()
 end)
 
 
---reconnect each hours to mqtt
+-- reconnect each hours to mqtt
 -- milisesonds N = 1000 milisesonds * 60 = minutes
 -- reconnect each hour
 tmr.alarm(5, 3600000, tmr.ALARM_AUTO, function() reconnect_mqtt() end)
