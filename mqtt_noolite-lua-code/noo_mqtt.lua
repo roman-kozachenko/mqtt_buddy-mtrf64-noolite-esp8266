@@ -29,9 +29,13 @@ function register_myself()
     end)
 end
 
+function handle_mqtt_connection_error(client, reason)
+    tmr.create():alarm(10 * 1000, tmr.ALARM_SINGLE, reconnect_mqtt)
+  end
+
 function reconnect_mqtt()
     print('reconnect mqtt')
-    m:connect(MQTT_SERVER, MQTT_SERVER_PORT, 0, function(conn) register_myself() end) 
+    m:connect(MQTT_SERVER, MQTT_SERVER_PORT, 0, function(conn) register_myself() end, handle_mqtt_connection_error) 
 end
 
 
@@ -88,7 +92,6 @@ function setupUart()
             data3, id1, id2, id3, id4 = parserModule.split_rx_b(rx_b)
 
             m:publish("mqtt_buddy/sys", 'mtrf64> received RX '..rx_a..rx_b, 0, 0)
-            --m:publish("mqtt_buddy/sys", 'mtrf64> received PARCED a/b '..answer_code..' '..channel..' '..cmd..' '..id1..' '..id2..' '..id3..' '..id4..' '..data3, 0, 0)
 
             -- answer_code=3 means bind success
             if answer_code == '3' then  
