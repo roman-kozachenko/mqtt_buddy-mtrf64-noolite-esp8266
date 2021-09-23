@@ -8,10 +8,10 @@ db = require("storage")
 -- Credentials
 SSID = "Damavik 178"
 PASSWORD = "6775069a"
-MQTT_SERVER = "192.168.0.67"
+MQTT_SERVER = "openhabian"
 MQTT_SERVER_PORT = 1883
-MQTT_USER = ""
-MQTT_PASS = ""
+MQTT_USER = "openhabian"
+MQTT_PASS = "altsoft"
 
 local LAST_ACTION
 
