@@ -54,11 +54,13 @@ m:on("message", function(client, topic, data)
             if data == 'switch' then uart.write(0, commands.switch(8, channel, id1, id2, id3, id4))
             elseif data == 'on' then uart.write(0, commands.on(8, channel, id1, id2, id3, id4))
             elseif data == 'off' then uart.write(0, commands.off(8, channel, id1, id2, id3, id4))
+            elseif data == 'state' then uart.write(0, commands.state(8, channel, id1, id2, id3, id4))
             end
         elseif action == 'chan_switch' then
             if data == 'switch' then uart.write(0, commands.switch(0, channel, 0, 0, 0, 0))
             elseif data == 'on' then uart.write(0, commands.on(0, channel, 0, 0, 0, 0))
             elseif data == 'off' then uart.write(0, commands.off(0, channel, 0, 0, 0, 0))
+            elseif data == 'state' then uart.write(0, commands.state(0, channel, 0, 0, 0, 0))
             end
         elseif action == 'devices' and data == 'GET' then
             devices = db.get_devices(channel)

@@ -36,4 +36,9 @@ function byte_commands.off(ctr, channel, id1, id2, id3, id4)
     return string.char(171, 2, ctr, 0, channel, 0, 0, 0, 0, 0, 0, id1, id2, id3, id4, cksum, 172)
 end
 
+function byte_commands.state(ctr, channel, id1, id2, id3, id4)
+    cksum = checksum(171, 2, ctr, 0, channel, 128, 0, 0, 0, 0, 0, id1, id2, id3, id4)
+    return string.char(171, 2, ctr, 0, channel, 128, 0, 0, 0, 0, 0, id1, id2, id3, id4, cksum, 172)
+end
+
 return byte_commands
