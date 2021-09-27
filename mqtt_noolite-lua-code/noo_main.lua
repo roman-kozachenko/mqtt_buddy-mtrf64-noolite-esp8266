@@ -16,6 +16,6 @@ noo_wifi.setup(creds.SSID, creds.PASSWORD, function()
         tmr.alarm(5, 3600000, tmr.ALARM_AUTO, noo_mqtt.reconnect)
 
         noo_mqtt.register_myself()
-        noo_uart.start(noo_mqtt.log)
+        noo_uart.start(noo_mqtt.log, noo_mqtt.getLastAction)
     end)
 end)

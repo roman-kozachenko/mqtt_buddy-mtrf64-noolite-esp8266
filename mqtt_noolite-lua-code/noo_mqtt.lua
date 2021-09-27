@@ -44,8 +44,15 @@ function processSwitchCommands(data, writer)
     end
 end
 
+function noo_mqtt.getLastAction() return LAST_ACTION end
+
+function noo_mqtt.writeChannelState(channel, state)
+    mclient:publish("noolite/state/" .. channel, state, 0, 0)
+end
 mclient:on("connect", function(client) print("connected MQTT server") end)
+
 mclient:on("offline", function(client) reconnect() end)
+
 mclient:on("message", function(client, topic, data)
     channel, action = parserModule.split_topic(topic)
     LAST_ACTION = action
