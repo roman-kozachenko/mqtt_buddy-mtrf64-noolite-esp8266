@@ -1,2 +1,2 @@
 --initialize all stuff
-dofile("noo_mqtt.lua")
+dofile("noo_main.lua")
