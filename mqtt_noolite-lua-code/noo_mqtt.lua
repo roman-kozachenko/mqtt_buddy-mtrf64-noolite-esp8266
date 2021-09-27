@@ -4,18 +4,12 @@ parserModule = require("parsers")
 uartModule = require("noo_uart")
 commands = require("byte_commands")
 db = require("storage")
+creds = require("credentials")
 
--- Credentials
-SSID = "Damavik 178"
-PASSWORD = "6775069a"
-MQTT_SERVER = "192.168.0.73"
-MQTT_SERVER_PORT = 1883
-MQTT_USER = "openhabian"
-MQTT_PASS = "altsoft"
 
 local LAST_ACTION
 
-m = mqtt.Client("MQTT_BUDDY_ESP", 120, MQTT_USER, MQTT_PASS)
+m = mqtt.Client("MQTT_BUDDY_ESP", 120, creds.MQTT_USER, creds.MQTT_PASS)
 
 function logToMqtt(message)
     m:publish("mqtt_buddy/sys",message, 0, 0)
@@ -35,7 +29,7 @@ function handle_mqtt_connection_error(client, reason)
 
 function reconnect_mqtt()
     print('reconnect mqtt')
-    m:connect(MQTT_SERVER, MQTT_SERVER_PORT, 0, function(conn) register_myself() end, handle_mqtt_connection_error) 
+    m:connect(creds.MQTT_SERVER, creds.MQTT_SERVER_PORT, 0, function(conn) register_myself() end, handle_mqtt_connection_error) 
 end
 
 
@@ -116,9 +110,9 @@ function setupUart()
 end
 
 -- Setup
-wifiModule.setup(SSID, PASSWORD, function() 
+wifiModule.setup(creds.SSID, creds.PASSWORD, function() 
     print('start connection to mqtt')
-    m:connect(MQTT_SERVER, MQTT_SERVER_PORT, 0, function(conn) 
+    m:connect(creds.MQTT_SERVER, creds.MQTT_SERVER_PORT, 0, function(conn) 
         register_myself()
         setupUart()
      end) 

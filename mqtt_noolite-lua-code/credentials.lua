@@ -1,0 +1,6 @@
+SSID = "Damavik 178"
+PASSWORD = "6775069a"
+MQTT_SERVER = "192.168.0.73"
+MQTT_SERVER_PORT = 1883
+MQTT_USER = "openhabian"
+MQTT_PASS = "altsoft"
