@@ -11,9 +11,7 @@ local mclient = mqtt.Client("MQTT_BUDDY_ESP", 120, creds.MQTT_USER,
 
 noo_mqtt.client = mclient
 
-function noo_mqtt.log(message)
-    mclient:publish("mqtt_buddy/sys", message, 0, 0)
-end
+function noo_mqtt.log(message) mclient:publish("mqtt_buddy/sys", message, 0, 0) end
 
 function noo_mqtt.register_myself()
     print('start register_myself')
@@ -34,6 +32,18 @@ function noo_mqtt.reconnect()
                     handle_mqtt_connection_error)
 end
 
+function processSwitchCommands(data, writer)
+    if data == 'switch' then
+        writer(commands.switch)
+    elseif data == 'on' then
+        writer(commands.on)
+    elseif data == 'off' then
+        writer(commands.off)
+    elseif data == 'state' then
+        writer(commands.state)
+    end
+end
+
 mclient:on("connect", function(client) print("connected MQTT server") end)
 mclient:on("offline", function(client) reconnect() end)
 mclient:on("message", function(client, topic, data)
@@ -47,26 +57,17 @@ mclient:on("message", function(client, topic, data)
             uart.write(0, commands.unbind(channel))
         elseif action:match("^%d+-%d+-%d+-%d+") ~= nil then
             id1, id2, id3, id4 = parserModule.split_address(action)
+
             LAST_ACTION = 'addr_switch'
-            if data == 'switch' then
-                uart.write(0, commands.switch(8, channel, id1, id2, id3, id4))
-            elseif data == 'on' then
-                uart.write(0, commands.on(8, channel, id1, id2, id3, id4))
-            elseif data == 'off' then
-                uart.write(0, commands.off(8, channel, id1, id2, id3, id4))
-            elseif data == 'state' then
-                uart.write(0, commands.state(8, channel, id1, id2, id3, id4))
-            end
+
+            processSwitchCommands(data, function(cmd)
+                uart.write(0, cmd(8, channel, id1, id2, id3, id4))
+            end)
+
         elseif action == 'chan_switch' then
-            if data == 'switch' then
-                uart.write(0, commands.switch(0, channel, 0, 0, 0, 0))
-            elseif data == 'on' then
-                uart.write(0, commands.on(0, channel, 0, 0, 0, 0))
-            elseif data == 'off' then
-                uart.write(0, commands.off(0, channel, 0, 0, 0, 0))
-            elseif data == 'state' then
-                uart.write(0, commands.state(0, channel, 0, 0, 0, 0))
-            end
+            processSwitchCommands(data, function(cmd)
+                uart.write(0, cmd(0, channel, 0, 0, 0, 0))
+            end)
         elseif action == 'devices' and data == 'GET' then
             devices = db.get_devices(channel)
             if devices then
